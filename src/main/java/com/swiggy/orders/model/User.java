@@ -1,5 +1,6 @@
 package com.swiggy.orders.model;
 
+import com.swiggy.orders.dto.UserResponse;
 import com.swiggy.orders.utils.Location;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -29,5 +30,8 @@ public class User {
         this.location = location;
     }
 
+    public UserResponse toDto() {
+        return new UserResponse(this);
+    }
 }
 
