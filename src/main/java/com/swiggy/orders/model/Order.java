@@ -1,5 +1,6 @@
 package com.swiggy.orders.model;
 
+import com.swiggy.orders.dto.OrderResponse;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,12 +18,17 @@ public class Order {
 
     private List<Integer> menuItemsIds;
 
-    @OneToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     public Order(List<Integer> menuItemsIds, User user) {
         this.menuItemsIds = menuItemsIds;
         this.user = user;
+    }
+
+    public Object toDto() {
+        return new OrderResponse(this);
     }
 }
 
