@@ -33,7 +33,7 @@ public class Order {
         this.orderStatus = OrderStatus.CREATED;
     }
 
-    public Object toDto() {
+    public OrderResponse toDto() {
         return new OrderResponse(this);
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 public class OrderResponse {
     private int id;
 
-    private UserResponse userResponse;
+    private int userID;
 
     private List<Integer> menuItemIds;
 
@@ -22,7 +22,7 @@ public class OrderResponse {
         this.id = order.getId();
         this.menuItemIds = order.getMenuItemsIds();
         this.orderStatus = order.getOrderStatus();
-        this.userResponse = order.getUser().toDto();
+        this.userID = order.getUser().getId();
     }
 
 }
