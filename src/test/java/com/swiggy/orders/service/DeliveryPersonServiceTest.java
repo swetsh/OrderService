@@ -2,10 +2,12 @@ package com.swiggy.orders.service;
 
 import com.swiggy.orders.exceptions.DeliveryPersonAlreadyExistException;
 import com.swiggy.orders.exceptions.DeliveryPersonNotFoundException;
+import com.swiggy.orders.exceptions.OrderAssignmentFailedException;
 import com.swiggy.orders.exceptions.OrderNotFoundException;
 import com.swiggy.orders.model.DeliveryPerson;
 import com.swiggy.orders.model.Order;
 import com.swiggy.orders.repository.DeliveryPersonRepository;
+import com.swiggy.orders.state.OrderStatus;
 import com.swiggy.orders.utils.Location;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +31,10 @@ class DeliveryPersonServiceTest {
     @Mock
     private DeliveryPersonRepository deliveryPersonRepository;
 
+    @Mock
+    private Order order;
+    @Mock
+    private OrderService orderService;
 
     @Mock
     private DeliveryPerson deliveryPerson;
@@ -91,4 +97,37 @@ class DeliveryPersonServiceTest {
         assertTrue(deliveryPeople.contains(deliveryPerson2));
     }
 
+
+    @Test
+    void testUpdateOnDeliveryPersonShouldUpdateAssignedOrder() {
+        when(deliveryPersonRepository.findById(anyInt())).thenReturn(Optional.of(deliveryPerson));
+        when(deliveryPersonRepository.save(any(DeliveryPerson.class))).thenReturn(deliveryPerson);
+        when(orderService.findOrderById(anyInt())).thenReturn(order);
+
+        deliveryPersonService.update(1, 1);
+
+        verify(orderService, times(1)).update(eq(1), eq(OrderStatus.ASSIGNED));
+        verify(orderService, never()).update(eq(2), eq(OrderStatus.ASSIGNED));
+        verify(orderService, never()).update(eq(1), eq(OrderStatus.CREATED));
+        verify(orderService, never()).update(eq(1), eq(OrderStatus.COMPLETED));
+
+
+        verify(deliveryPerson, times(1)).assignOrder(order);
+        verify(deliveryPersonRepository, times(1)).save(any(DeliveryPerson.class));
+    }
+
+    @Test
+    void testUpdateOnDeliveryPersonWithInvalidOrderIdShouldThrowException() {
+        when(orderService.findOrderById(anyInt())).thenThrow(OrderNotFoundException.class);
+
+        assertThrows(OrderAssignmentFailedException.class, () -> deliveryPersonService.update(1, 1));
+    }
+
+    @Test
+    void testUpdateOnDeliveryPersonWithInvalidPersonIdShouldThrowException() {
+        when(orderService.findOrderById(anyInt())).thenReturn(order);
+        when(deliveryPersonRepository.findById(anyInt())).thenThrow(DeliveryPersonNotFoundException.class);
+
+        assertThrows(OrderAssignmentFailedException.class, () -> deliveryPersonService.update(1, 1));
+    }
 }

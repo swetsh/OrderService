@@ -2,6 +2,7 @@ package com.swiggy.orders.service;
 
 import com.swiggy.orders.exceptions.DeliveryPersonAlreadyExistException;
 import com.swiggy.orders.exceptions.DeliveryPersonNotFoundException;
+import com.swiggy.orders.exceptions.OrderAssignmentFailedException;
 import com.swiggy.orders.exceptions.OrderNotFoundException;
 import com.swiggy.orders.model.DeliveryPerson;
 import com.swiggy.orders.model.Order;
@@ -19,8 +20,11 @@ public class DeliveryPersonService {
     @Autowired
     private DeliveryPersonRepository deliveryPersonRepository;
 
+    @Autowired
+    private OrderService orderService;
+
     public DeliveryPerson createDeliveryPerson(String name, Location location) {
-        DeliveryPerson deliveryPerson = new DeliveryPerson(name,  location);
+        DeliveryPerson deliveryPerson = new DeliveryPerson(name, location);
 
         try {
             return deliveryPersonRepository.save(deliveryPerson);
@@ -39,4 +43,17 @@ public class DeliveryPersonService {
         return deliveryPersonRepository.findAll();
     }
 
+
+    public DeliveryPerson update(int deliveryPersonId, int orderId) {
+        try {
+            Order order = orderService.findOrderById(orderId);
+            DeliveryPerson deliveryPerson = findDeliveryPersonById(deliveryPersonId);
+            deliveryPerson.assignOrder(order);
+            orderService.update(orderId, OrderStatus.ASSIGNED);
+
+            return deliveryPersonRepository.save(deliveryPerson);
+        } catch (OrderNotFoundException | DeliveryPersonNotFoundException orderNotFoundException) {
+            throw new OrderAssignmentFailedException();
+        }
+    }
 }
