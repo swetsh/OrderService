@@ -21,6 +21,8 @@ public class DeliveryPerson {
     @Embedded
     private Location location;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "assigned_order_id", referencedColumnName = "id")
     private Order order;
 
     public DeliveryPerson(String username, Location location) {
