@@ -23,8 +23,7 @@ public class SecurityConfig {
                 .formLogin(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(antMatcher("/api/v1/users/**")).permitAll();
-                    auth.anyRequest().permitAll();
-//                    auth.anyRequest().authenticated();
+                    auth.anyRequest().authenticated();
                 }).headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .httpBasic(Customizer.withDefaults());
 

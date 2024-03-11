@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
@@ -46,6 +47,7 @@ class DeliveryPersonControllerTest {
     private DeliveryPersonController deliveryPersonController;
 
     @Test
+    @WithMockUser
     public void testCreateUser_Success() throws Exception {
         DeliveryPersonRequest deliveryPersonRequest = new DeliveryPersonRequest("testUser", new Location());
         DeliveryPerson deliveryPerson = new DeliveryPerson(deliveryPersonRequest.name(), deliveryPersonRequest.location());
@@ -64,6 +66,7 @@ class DeliveryPersonControllerTest {
 
 
     @Test
+    @WithMockUser
     public void testGetAllDeliveryPerson() throws Exception {
         DeliveryPerson deliveryPerson = mock(DeliveryPerson.class);
         DeliveryPerson otherDeliveryPerson = mock(DeliveryPerson.class);
@@ -86,6 +89,7 @@ class DeliveryPersonControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void testUpdateDeliveryPersonOrderWithId_Success() throws Exception {
         DeliveryPerson deliveryPerson = mock(DeliveryPerson.class);
 
@@ -105,6 +109,7 @@ class DeliveryPersonControllerTest {
 
 
     @Test
+    @WithMockUser
     public void testUpdateOrdersWithId_NotFound() throws Exception {
         when(deliveryPersonService.update(1, 1)).thenThrow(OrderAssignmentFailedException.class);
 

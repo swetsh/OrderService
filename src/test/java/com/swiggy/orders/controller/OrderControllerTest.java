@@ -74,6 +74,7 @@ class OrderControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void testGetAllOrders() throws Exception {
         Order order = mock(Order.class);
         Order otherOrder = mock(Order.class);
@@ -96,6 +97,7 @@ class OrderControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void testGetOrdersWithId() throws Exception {
         Order order = mock(Order.class);
 
@@ -111,6 +113,7 @@ class OrderControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void testGetOrdersWithId_NotFound() throws Exception {
         when(orderService.findOrderById(1)).thenThrow(OrderNotFoundException.class);
 
@@ -120,6 +123,7 @@ class OrderControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void testPutOrdersWithId_Success() throws Exception {
         Order order = mock(Order.class);
 
@@ -140,6 +144,7 @@ class OrderControllerTest {
 
 
     @Test
+    @WithMockUser
     public void testUpdateOrdersWithId_NotFound() throws Exception {
         when(orderService.update(1, OrderStatus.COMPLETED)).thenThrow(OrderNotFoundException.class);
 

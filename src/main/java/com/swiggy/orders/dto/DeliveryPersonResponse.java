@@ -12,12 +12,16 @@ public class DeliveryPersonResponse {
 
     private Location location;
 
-    private Order order;
+    private int orderId;
 
     public DeliveryPersonResponse(DeliveryPerson deliveryPerson) {
         this.id = deliveryPerson.getId();
         this.name = deliveryPerson.getUsername();
         this.location = deliveryPerson.getLocation();
-        this.order = deliveryPerson.getOrder();
+        Order order = deliveryPerson.getOrder();
+        if (order == null)
+            this.orderId = -1;
+        else
+            this.orderId = order.getId();
     }
 }
